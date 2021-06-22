@@ -28,9 +28,9 @@ for testing the app you should create a test database using:
 create database postgres_test;
 
 
-Publishing
-To publish the app:
+Docker:
 
+To run the app using docker:
 1) mvn clean install
 2) move jar from target to publish/app
 3) build the docker image from publish folder using:
