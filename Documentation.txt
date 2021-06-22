@@ -1,0 +1,49 @@
+Database:
+
+PostgreSQL will be used to store data
+To install PostgreSQL locally you can execute the following command:
+docker run -d --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=password  postgres
+or You can install locally from:
+https://www.postgresql.org/download/
+
+To create statistics view you can use:
+
+create or replace view statistics as
+select to_char(date,'Mon') as month
+,sum( price * count) as "total_purchased_amount"
+,sum( count) as "total_book_count"
+,count(distinct(co.id)) as "total_order_count"
+from order_detail od inner join book b2
+on od.book_id  = b2.id
+inner join customer_order co
+on od.order_id = co .id
+
+group by month
+
+The other tables will be created automatically because of:
+spring.jpa.hibernate.ddl-auto=update
+
+Testing:
+for testing the app you should create a test database using:
+create database postgres_test;
+
+
+Publishing
+To publish the app:
+
+1) mvn clean install
+2) move jar from target to publish/app
+3) build the docker image from publish folder using:
+docker build -t getir/reading-is-good .
+
+To run the docker container you can use the following command:
+docker run -p 9090:8080 getir/reading-is-good
+
+Note:
+if you use PostgreSQL from docker container then use:
+host.docker.internal as the address of PostgreSQL in properties
+
+Note:
+To access the APIs you should use Basics authentication:
+Username: admin
+Password: password
